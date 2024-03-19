@@ -13,6 +13,18 @@ pipeline {
                 echo 'Building..'
                 sh 'cd webapp && npm install && npm run build'
             }
-        }    
+        }
+        stage('nexus-release') {
+            steps {
+                script {
+                    echo "Publish LMS Artifacts"       
+                    def packageJSON = readJSON file: 'webapp/package.json'
+                    def packageJSONVersion = packageJSON.version
+                    echo "${packageJSONVersion}"  
+                    sh "zip webapp/dist-${packageJSONVersion}.zip -r webapp/dist"
+                    sh "curl -v -u admin:123456 --upload-file webapp/dist-${packageJSONVersion}.zip http://34.221.34.237:8081/repository/lms/"     
+                }
+            }
+        }     
     }
 }
