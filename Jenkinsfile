@@ -18,7 +18,7 @@ pipeline {
                 script{
                     echo 'uploading dist..'
                     def packageJSON = readJSON file : 'webapp/package.json'
-                    def packageJSONVersion = packageJSON.Version
+                    def packageJSONVersion = packageJSON.version
                     echo "${packageJSONVersion}"
                     sh 'zip webapp/dist-${packageJSONVersion}.zip -r webapp/dist'
                     sh 'curl -v -u admin:123456 --upload-file webapp/dist-${packageJSONVersion}.zip http://18.236.78.16:8081/repository/lms/'
@@ -30,7 +30,7 @@ pipeline {
                 script{
                     echo 'deploying..'
                     def packageJSON = readJSON file : 'webapp/package.json'
-                    def packageJSONVersion = packageJSON.Version
+                    def packageJSONVersion = packageJSON.version
                     echo "${packageJSONVersion}"
                     sh 'curl -u admin:123456 -X GET \'http://18.236.78.16:8081/repository/webapp/dist-${packageJSONVersion}.zip\' --output webapp/dist-${packageJSONVersion}.zip'
                     sh 'unzip webapp/dist-${packageJSONVersion}.zip'
