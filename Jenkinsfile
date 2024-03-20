@@ -17,11 +17,11 @@ pipeline {
             steps {
                 script{
                     echo 'uploading dist..'
-                    def myJSON = readJSON file : 'webapp/package.json'
-                    def myVersion = packageJSON.Version
-                    echo "${myVersion}"
-                    sh 'zip webapp/dist-${myVersion}.zip -r webapp/dist'
-                    sh 'curl -v -u admin:123456 --upload-file webapp/dist-${myVersion}.zip http://18.236.78.16:8081/repository/lms/'
+                    def packageJSON = readJSON file : 'webapp/package.json'
+                    def packageJSONVersion = packageJSON.Version
+                    echo "${packageJSONVersion}"
+                    sh 'zip webapp/dist-${packageJSONVersion}.zip -r webapp/dist'
+                    sh 'curl -v -u admin:123456 --upload-file webapp/dist-${packageJSONVersion}.zip http://18.236.78.16:8081/repository/lms/'
                 }
             }
         }
@@ -29,11 +29,11 @@ pipeline {
             steps {
                 script{
                     echo 'deploying..'
-                    def myJSON = readJSON file : 'webapp/package.json'
-                    def myVersion = packageJSON.Version
-                    echo "${myVersion}"
-                    sh 'curl -u admin:123456 -X GET \'http://18.236.78.16:8081/repository/webapp/dist-${myVersion}.zip\' --output webapp/dist-${myVersion}.zip'
-                    sh 'unzip webapp/dist-${myVersion}.zip'
+                    def packageJSON = readJSON file : 'webapp/package.json'
+                    def packageJSONVersion = packageJSON.Version
+                    echo "${packageJSONVersion}"
+                    sh 'curl -u admin:123456 -X GET \'http://18.236.78.16:8081/repository/webapp/dist-${packageJSONVersion}.zip\' --output webapp/dist-${packageJSONVersion}.zip'
+                    sh 'unzip webapp/dist-${packageJSONVersion}.zip'
                     sh 'sudo rm -rf /var/www/html/*'
                     sh 'sudo cp -r webapp/dist/* /var/www/html'
                 }
