@@ -20,8 +20,8 @@ pipeline {
                     def packageJSON = readJSON file : 'webapp/package.json'
                     def packageJSONVersion = packageJSON.version
                     echo "${packageJSONVersion}"
-                    sh 'zip webapp/dist.zip -r webapp/dist'
-                    sh 'curl -v -u admin:123456 --upload-file webapp/dist.zip http://18.236.78.16:8081/repository/lms/'
+                    sh 'zip webapp/dist-${packageJSONVersion}.zip -r webapp/dist'
+                    sh 'curl -v -u admin:123456 --upload-file webapp/dist-${packageJSONVersion}.zip http://18.236.78.16:8081/repository/lms/'
                 }
             }
         }
@@ -32,8 +32,8 @@ pipeline {
                     def packageJSON = readJSON file : 'webapp/package.json'
                     def packageJSONVersion = packageJSON.version
                     echo "${packageJSONVersion}"
-                    sh 'curl -u admin:123456 -X GET \'http://18.236.78.16:8081/repository/webapp/dist.zip\' --output webapp/dist.zip'
-                    sh 'unzip webapp/dist.zip'
+                    sh 'curl -u admin:123456 -X GET \'http://18.236.78.16:8081/repository/webapp/dist-${packageJSONVersion}.zip\' --output webapp/dist-${packageJSONVersion}.zip'
+                    sh 'unzip webapp/dist-${packageJSONVersion}.zip'
                     sh 'sudo rm -rf /var/www/html/*'
                     sh 'sudo cp -r webapp/dist/* /var/www/html'
                 }
