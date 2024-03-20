@@ -32,7 +32,7 @@ pipeline {
                     def myJSON = readJSON file : 'webapp/package.json'
                     def myVersion = packageJSON.Version
                     echo "${myVersion}"
-                    sh 'curl -u admin:123456 -X GET 'http://18.236.78.16:8081/repository/webapp/dist-${myVersion}.zip' --output webapp/dist-${myVersion}.zip'
+                    sh 'curl -u admin:123456 -X GET \'http://18.236.78.16:8081/repository/webapp/dist-${myVersion}.zip\' --output webapp/dist-${myVersion}.zip'
                     sh 'unzip webapp/dist-${myVersion}.zip'
                     sh 'sudo rm -rf /var/www/html/*'
                     sh 'sudo cp -r webapp/dist/* /var/www/html'
