@@ -13,29 +13,30 @@ pipeline {
                 sh 'cd webapp && npm install && npm run build'
             }
         }
-        stage('nexus') {
+        stage('Release LMS') {
             steps {
-                script{
-                    echo 'uploading dist..'
-                    def packageJSON = readJSON file : 'webapp/package.json'
+                script {
+                    echo "Publish LMS Artifacts"       
+                    def packageJSON = readJSON file: 'webapp/package.json'
                     def packageJSONVersion = packageJSON.version
-                    echo "${packageJSONVersion}"
-                    sh 'zip webapp/dist-${packageJSONVersion}.zip -r webapp/dist'
-                    sh 'curl -v -u admin:123456 --upload-file webapp/dist-${packageJSONVersion}.zip http://18.236.78.16:8081/repository/lms/'
+                    echo "${packageJSONVersion}"  
+                    sh "zip webapp/dist-${packageJSONVersion}.zip -r webapp/dist"
+                    sh "curl -v -u admin:123456 --upload-file webapp/dist-${packageJSONVersion}.zip http://18.236.78.16:8081/repository/lms/"     
                 }
             }
         }
-        stage('deploy') {
+	
+	        stage('Deploy LMS') {
             steps {
-                script{
-                    echo 'deploying..'
-                    def packageJSON = readJSON file : 'webapp/package.json'
+                script {
+                    echo "Deploy LMS"       
+                    def packageJSON = readJSON file: 'webapp/package.json'
                     def packageJSONVersion = packageJSON.version
-                    echo "${packageJSONVersion}"
-                    sh 'curl -u admin:123456 -X GET \'http://18.236.78.16:8081/repository/dist-${packageJSONVersion}.zip\' --output dist-${packageJSONVersion}.zip'
-                    sh 'unzip dist-${packageJSONVersion}.zip'
+                    echo "${packageJSONVersion}"  
+                    sh "curl -u admin:123456 -X GET \'http://18.236.78.16:8081/repository/lms/dist-${packageJSONVersion}.zip\' --output dist-'${packageJSONVersion}'.zip"
                     sh 'sudo rm -rf /var/www/html/*'
-                    sh 'sudo cp -r webapp/dist/* /var/www/html'
+                    sh "sudo unzip -o dist-'${packageJSONVersion}'.zip"
+                    sh "sudo cp -r webapp/dist/* /var/www/html"
                 }
             }
         }
