@@ -26,7 +26,7 @@ pipeline {
             }
         }
 	
-	        stage('Deploy LMS') {
+	stage('Deploy LMS') {
             steps {
                 script {
                     echo "Deploy LMS"       
